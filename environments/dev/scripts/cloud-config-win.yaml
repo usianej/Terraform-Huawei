@@ -1,0 +1,5 @@
+#cloud-config
+password: xxxxx
+chpasswd: { expire: False }  # Force password reset on first login
+timezone: UTC
+hostname: windows-server

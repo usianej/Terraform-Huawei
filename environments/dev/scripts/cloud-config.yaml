@@ -1,0 +1,34 @@
+#cloud-config
+users:
+  - name: root
+    plain_text_passwd: xxxxxx
+    lock_passwd: false
+    shell: /bin/bash
+
+  - name: admin
+    plain_text_passwd: xxxxx
+    lock_passwd: false
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+  - name: devuser
+    plain_text_passwd: xxxxx
+    lock_passwd: false
+    shell: /bin/bash
+    groups: developers
+
+runcmd:
+  - echo "Running additional setup commands..."
+  - chage -d 0 admin   # Force admin to reset password on first login
+  - chage -d 0 devuser # Force devuser to reset password on first login
+  - bash /etc/bootstrap.sh
+
+write_files:
+  - path: /etc/bootstrap.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      echo "Setting up the environment..."
+      echo "ubuntu:YourSecurePassword" | chpasswd
+      chage -d 0 ubuntu
+      echo "Environment setup complete."
